@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<record_update table="sys_scope_privilege">
+    <sys_scope_privilege action="INSERT_OR_UPDATE">
+        <operation>execute</operation>
+        <source_scope display_value="ippi">354767911331ba005a4354c32244b0b3</source_scope>
+        <status>allowed</status>
+        <sys_class_name>sys_scope_privilege</sys_class_name>
+        <sys_created_by>alex.mittell</sys_created_by>
+        <sys_created_on>2017-04-20 22:37:30</sys_created_on>
+        <sys_customer_update>false</sys_customer_update>
+        <sys_id>bbe8a630135e72005a4354c32244b0fc</sys_id>
+        <sys_mod_count>1</sys_mod_count>
+        <sys_name>MIDServerFinder</sys_name>
+        <sys_package display_value="ippi" source="x_snc_ippi">354767911331ba005a4354c32244b0b3</sys_package>
+        <sys_policy/>
+        <sys_replace_on_upgrade>true</sys_replace_on_upgrade>
+        <sys_scope display_value="ippi">354767911331ba005a4354c32244b0b3</sys_scope>
+        <sys_update_name>sys_scope_privilege_bbe8a630135e72005a4354c32244b0fc</sys_update_name>
+        <sys_updated_by>alex.mittell</sys_updated_by>
+        <sys_updated_on>2017-04-27 22:20:42</sys_updated_on>
+        <target_name>MIDServerFinder</target_name>
+        <target_scope display_value="Global">global</target_scope>
+        <target_type>sys_script_include</target_type>
+    </sys_scope_privilege>
+</record_update>

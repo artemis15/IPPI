@@ -1,0 +1,519 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<record_update table="sys_script_include">
+    <sys_script_include action="INSERT_OR_UPDATE">
+        <access>public</access>
+        <active>true</active>
+        <api_name>x_snc_ippi.Build_Server_Processor</api_name>
+        <client_callable>false</client_callable>
+        <description>This is the script to process Build Servers From a WebHook Call</description>
+        <name>Build_Server_Processor</name>
+        <script><![CDATA[var Build_Server_Processor = Class.create();
+Build_Server_Processor.prototype = {
+	initialize: function() {
+		
+	},
+	
+	BuildProcess: function(WebHookJSON){
+		gs.info("Debug Started BuildProcess");
+		//var myproc = new Build_Server_Processor();
+		//var BuildWebHook = {
+			//commit : "6473633764859536",
+			//buildurl : "https://this.is.working",
+			//buildserver : "this.is.working",
+			//};
+			//var myreturn = myproc.WebHook(BuildWebHook);
+			//gs.info(JSON.stringify(myreturn));
+			//var newreturn = myproc.LookUpBuildServer(myreturn);
+			//gs.info(JSON.stringify(newreturn));
+			var webhookreturn = this.WebHook(WebHookJSON);
+		if (webhookreturn){
+			var buildserver = this.LookUpBuildServer(webhookreturn);
+			var buildJSON = this.FetchBuild(webhookreturn,buildserver);
+			var repo = this.GetRepoFromBuild(webhookreturn.JobName);
+			var commitJSON = this.FetchCommit(webhookreturn, buildserver, repo);
+			var branch = this.Get_CreateBranch(commitJSON.branchname, repo.repo);
+			var commit = this.Commits_To_Table(commitJSON, repo, branch);
+			var build = this.Builds_To_Table(commit, buildJSON, commitJSON);
+		}
+		else {
+			throw "Could not find a Build Server type to process: " + WebHookJSON;
+		}
+			
+		},
+		WebHook: function(WebHookJSON) {
+			var gr = new GlideRecord("x_snc_ippi_build_server_types");
+			var count = 0;
+			gs.info("Debug: Starting WebHook  JSON :" + JSON.stringify(WebHookJSON));
+			gr.query();
+			while (gr.next()){
+				gs.info("Type :" + count++);
+				var evaluator = new GlideScopedEvaluator();
+				evaluator.putVariable('webhookjson', WebHookJSON);
+				evaluator.putVariable('result', null);
+				evaluator.evaluateScript(gr, 'webhook_script', null);
+				var thereturn = evaluator.getVariable('result');
+				if (thereturn){
+					gs.info("Debug: Got a return");
+					if (thereturn.BuildURL){
+						thereturn.type = "" + gr.sys_id;
+						thereturn.fetch_build_url = gr.fetch_build_url;
+						thereturn.fetch_build_script = gr.fetch_build_script;
+						gs.info("Debug: Process Build URL "+thereturn.BuildURL);
+						return thereturn;
+					}
+				}
+			}
+		},
+		LookUpBuildServer: function(BuildDetails){
+			var thereturn = {
+				username : "",
+				password : "",
+				buildserver : ""
+			};
+			var gr = new GlideRecord("x_snc_ippi_build_servers");
+			//gs.info(BuildDetails.BuildServer);
+			gr.addQuery("host",BuildDetails.BuildServer);
+			gr.addQuery("type",BuildDetails.type);
+			gr.query();
+			if (gr.next()){
+				thereturn.username = gr.credentials.username + "";
+				if (gr.credentials.password){
+					thereturn.password = gr.credentials.password.getDecryptedValue() + "";
+				}
+				else {
+					thereturn.password = null;
+				}
+				thereturn.buildserver = gr.sys_id + "";
+				thereturn.midserver = gr.mid_server + "";
+				thereturn.authtype = gr.credentials.type + "";
+				if (gr.credentials.authtoken){
+					thereturn.authtoken = gr.credentials.authtoken.getDecryptedValue() + "";
+				}
+				else {
+					thereturn.authtoken = null;
+				}
+			}
+			return thereturn;
+		},
+		
+		FetchBuild: function(BuildDetails, ServerDetails) {
+			var gr = new GlideRecord("x_snc_ippi_build_server_types");
+			gr.get(BuildDetails.type);
+			
+			var evaluator = new GlideScopedEvaluator();
+			evaluator.putVariable('fetchbuildurl', gr.fetch_build_url + "");
+			evaluator.putVariable('result', null);
+			evaluator.putVariable('buildserver', BuildDetails.BuildServer);
+			evaluator.putVariable('buildurl', BuildDetails.BuildURL);
+			evaluator.putVariable('commitSHA', BuildDetails.CommitSHA);
+			evaluator.putVariable('authtoken', ServerDetails.authtoken);
+			evaluator.putVariable('mid_server', ServerDetails.midserver);
+			evaluator.putVariable('username', ServerDetails.username);
+			evaluator.putVariable('password', ServerDetails.password);
+			evaluator.putVariable('buildserverSysID', ServerDetails.buildserver);
+			evaluator.evaluateScript(gr, 'fetch_build_script', null);
+			
+			//fetchbuildurl, buildserver, buildurl, commitSHA, authtoken, mid_server, username, password, buildserverSysID;
+			var thereturn = evaluator.getVariable('result');
+			gs.info("Debug FetchBuild return :" + JSON.stringify(thereturn));
+			return thereturn;
+			
+			
+		},
+		
+		GetRepoFromBuild: function(buildname){
+			if (!buildname) {
+				throw "GetRepoFromBuild: Job Name Not Defined!";
+			}
+			gs.info("GetRepoFromBuild Name: "+buildname);
+			var gr = new GlideRecord('x_snc_ippi_scm_repositories');
+			gr.addQuery('build_job_name',buildname);
+			gr.query();
+			if (gr.next()){
+				var thereturn = {};
+				thereturn.username = gr.credential.user + "";
+				if (gr.credential.password){
+					thereturn.password = gr.credential.password.getDecryptedValue() + "";
+				}
+				else {
+					thereturn.password = null;
+				}
+				
+				if (gr.credential.authtoken){
+					thereturn.authtoken = gr.credential.authtoken.getDecryptedValue() + "";
+				}
+				else {
+					thereturn.authtoken = null;
+				}
+				
+				
+				thereturn.repo = gr.sys_id + "";
+				thereturn.scmurl = gr.url + "";
+				thereturn.midserver = gr.mid_server + "";
+				thereturn.type = gr.scm_type + "";
+				gs.info("SCM Repo Lookup Return: "+JSON.stringify(thereturn));
+				return thereturn;
+			} else {
+				throw "GetRepoFromBuild: No Repo Defined for Job Name "+buildname;
+			}
+			
+		},
+		
+		FetchCommit: function(BuildDetails, ServerDetails, repoinfo) {
+			gs.info("Debug Fetchcommit repoinfo:" + JSON.stringify(repoinfo));
+			var gr = new GlideRecord("x_snc_ippi_scm_server_types");
+			gr.get(repoinfo.type);
+			
+			var evaluator = new GlideScopedEvaluator();
+			evaluator.putVariable('fetchbuildurl', gr.fetch_build_url + "");
+			evaluator.putVariable('result', null);
+			evaluator.putVariable('repoURL', repoinfo.scmurl);
+			evaluator.putVariable('buildurl', ServerDetails.BuildURL);
+			evaluator.putVariable('commitSHA', BuildDetails.CommitSHA);
+			evaluator.putVariable('authtoken', repoinfo.authtoken);
+			evaluator.putVariable('mid_server', repoinfo.midserver);
+			evaluator.putVariable('username', repoinfo.username);
+			evaluator.putVariable('password', repoinfo.password);
+			evaluator.putVariable('repotype', repoinfo.type);
+			evaluator.putVariable('reposysid', repoinfo.repo);
+			evaluator.evaluateScript(gr, 'fetch_commit_script', null);
+			
+			//fetchbuildurl, buildserver, buildurl, commitSHA, authtoken, mid_server, username, password, buildserverSysID;
+			var thereturn = evaluator.getVariable('result');
+			
+			return thereturn;
+			
+			
+		},
+		
+		
+		Get_CreateBranch: function(branchname, repoid){
+			gs.info("Debug Create Branch branchname:" + branchname + " RepoID:" + repoid);
+			var gr = new GlideRecord('x_snc_ippi_scm_branches');
+			gr.addQuery('name' ,branchname);
+			gr.addQuery('repository', repoid);
+			gr.query();
+			var thereturn = {};
+			var mybranchname;
+			if (gr.next()){
+				mybranchname = branchname;
+				thereturn.branchID = gr.sys_id;
+			}
+			if (!mybranchname){
+				var branchDB_add = new GlideRecord('x_snc_ippi_scm_branches');
+				branchDB_add.initialize();
+				branchDB_add.name = branchname;
+				branchDB_add.repository = repoid;
+				thereturn.branchID = branchDB_add.insert();
+				
+			}
+			return thereturn;
+		},
+		//commitJSON
+		/*
+		commitJSON.additions;
+		commitJSON.deletions;
+		commitJSON.totalchanges;
+ 		*/
+		Commits_To_Table: function(commitJSON, repofrombuild, branchreturn){
+			gs.info("Debug Commits to table commitJSON:" + JSON.stringify(commitJSON));
+			gs.info("repofrom build: " + JSON.stringify(repofrombuild));
+			gs.info("branchreturn :" + JSON.stringify(branchreturn));
+			var commit_id;
+			var commitfiles = commitJSON.files;
+			//Time Function
+			function ISODateTimeToGlideDateTime(s) {
+				if ( (s == '') || (s == null) ) {
+					return null;
+				}
+				
+				// GlideDateTime constructor expects date format: 'YY-MM-DD HH::MM::SS'
+				parts = s.split(/[-TZ:+]/g);
+				
+				if (parts.length < 6) {
+					return null;
+				}
+				
+				dts = '';
+				dts += parts[0] + "-" + parts[1] + "-" + parts[2];
+				dts += ' ';
+				dts += parts[3] + ":" + parts[4] + ":" + parts[5];
+				
+				// Calculate timezone offset in seconds
+				sign = /\d\d-\d\d:\d\d$/.test(s)? '-' : '+';
+				if ( (parts[6] != null) && (parts[7] != null) ) {
+					offset = parseInt(parts[6] * 3600 + parseInt(parts[7] * 60));
+					offset = 0 + (sign == '+' ? -1 * offset : offset);
+				} else {
+					offset = 0;
+				}
+				
+				// GlideDateTime object
+				//gs.info('GDT=' + dts + 'OFFSET='+offset);
+				gdt = new GlideDateTime(dts);
+				gdt.addSeconds(offset);
+				return gdt;
+			}
+			
+			
+			//Lookup commit if it does not already exists
+			var branch_CommitsDB = new GlideRecord('x_snc_ippi_scm_commits');
+			branch_CommitsDB.addQuery('sha', commitJSON.sha);
+			branch_CommitsDB.query();
+			var branch_commits_InDB;
+			if (branch_CommitsDB.next()) {
+				branch_commits_InDB = branch_CommitsDB.sha;
+				commit_id = branch_CommitsDB.sys_id;
+			}
+			
+			//Find all commits that have not been added to the DB already
+			if (!branch_commits_InDB){
+				//Write each commit to the DB
+				
+				//add values to work with here.
+				var branch_sysID = branchreturn.branchID;
+				var repo_sysID = repofrombuild.repo;
+				var repo_commits = new GlideRecord('x_snc_ippi_scm_commits');
+				var files;
+				repo_commits.initialize();
+				repo_commits.branch = branch_sysID;
+				repo_commits.change_additions = commitJSON.additions;
+				repo_commits.change_deletions = commitJSON.deletions;
+				repo_commits.total_changes = commitJSON.totalchanges;
+				repo_commits.repository = repo_sysID;
+				
+				//files = commits_return_json.files;
+				
+				//repo_commits.author_name = commitJSON.authorname;
+				repo_commits.commit_date = ISODateTimeToGlideDateTime(commitJSON.date);
+				repo_commits.commiter_email = commitJSON.committeremail;
+				repo_commits.commiter = commitJSON.committername;
+				repo_commits.message = commitJSON.message;
+				repo_commits.sha = commitJSON.sha;
+				repo_commits.url = commitJSON.url;
+				commit_id = repo_commits.insert();
+				
+			
+			
+			//Files of the commit
+			var arrayoffiles = commitfiles;
+			for (var x = 0; x < arrayoffiles.length; x++){
+				
+				//See if files are in the Table
+				var myfiles = arrayoffiles[x];
+				var workingfile;
+				var filesnow = new GlideRecord('x_snc_ippi_scm_commit_files');
+				filesnow.addQuery('file_name', myfiles.filename);
+				filesnow.addQuery('commit_sha', myfiles.sha);
+				filesnow.query();
+				if (filesnow.next()){
+					workingfile = filesnow.filename;
+				}
+				if(!workingfile){
+					var repo_commits_file = new GlideRecord('x_snc_ippi_scm_commit_files');
+					repo_commits_file.commit_sha = myfiles.sha;
+					repo_commits_file.file_name = myfiles.filename;
+					repo_commits_file.file_changes = myfiles.changes;
+					repo_commits_file.file_additions = myfiles.additions;
+					repo_commits_file.file_deletions = myfiles.deletions;
+					repo_commits_file.patch = myfiles.patch;
+					repo_commits_file.file_size = myfiles.file_size;
+					repo_commits_file.file_path = myfiles.file_path;
+					repo_commits_file.commit = commit_id;
+					repo_commits_file.status = myfiles.status;
+					//repo_commits_file.file_text = myfiles.patch;
+					repo_commits_file.insert();
+				}
+			}
+			}
+			return commit_id;
+			
+		},
+		
+		//Need to add write build to table
+		Builds_To_Table: function(commit_id, buildJSON, commitJSON){
+			gs.info("Debug Builds to table BuildJSON:" + JSON.stringify(buildJSON));
+			gs.info("Debug Commit ID" + commit_id);
+			//New Time Object
+			function twoDigits(d) {
+				if(0 <= d && d < 10) return "0" + d.toString();
+					if(-10 < d && d < 0) return "-0" + (-1*d).toString();
+					return d.toString();
+			}
+			
+			function toMysqlFormat(mydate) {
+				return mydate.getUTCFullYear() + "-" + twoDigits(1 + mydate.getUTCMonth()) + "-" + twoDigits(mydate.getUTCDate()) + " " + twoDigits(mydate.getUTCHours()) + ":" + twoDigits(mydate.getUTCMinutes()) + ":" + twoDigits(mydate.getUTCSeconds());
+			}
+			
+			
+			var mytime = new Date();
+			var myforTime = toMysqlFormat(mytime);
+			var gdt = new GlideDateTime(myforTime);
+			var time = gdt;
+			var buildID = buildJSON.buildID;
+			var buildUrl = buildJSON.buildUrl;
+			var BuildName;
+			var BuildDB = new GlideRecord('x_snc_ippi_builds');
+			BuildDB.addQuery('build_id' ,buildJSON.buildID);
+			BuildDB.addQuery('url', buildJSON.buildUrl);
+			BuildDB.query();
+			while (BuildDB.next()) {
+				BuildName = BuildDB.display_name;
+				
+			}
+			if (!BuildName){
+				gs.info("Debug Writting Build started");
+				var buildDB_add = new GlideRecord('x_snc_ippi_builds');
+				buildDB_add.initialize();
+				buildDB_add.build_id = buildJSON.build_id;
+				buildDB_add.build_number = buildJSON.buildnumber;
+				buildDB_add.building = buildJSON.building;
+				buildDB_add.commit = commit_id;
+				buildDB_add.description = buildJSON.description;
+				buildDB_add.display_name = buildJSON.display_name;
+				buildDB_add.duration = buildJSON.duration;
+				buildDB_add.estimated_duration = buildJSON.estimated_duration;
+				buildDB_add.full_display_name = buildJSON.full_display_name;
+				buildDB_add.result = buildJSON.result;
+				buildDB_add.timestamp = time;
+				buildDB_add.url = buildJSON.url;
+				buildDB_add.insert();
+			}
+		},
+		
+		SCMWebHook: function(WebHookJSON) {
+			var gr = new GlideRecord("x_snc_ippi_scm_server_types");
+			gr.query();
+			while (gr.next()){
+				var evaluator = new GlideScopedEvaluator();
+				evaluator.putVariable('webhookjson', WebHookJSON);
+				evaluator.putVariable('result', null);
+				evaluator.evaluateScript(gr, 'webhook_script', null);
+				var thereturn = evaluator.getVariable('result');
+				if (thereturn){
+					gs.info("the return has a value");
+					if (thereturn.length > 0){
+						for (var x = 0; x<thereturn.length; x++){
+							thereturn[x]['type'] = "" + gr.sys_id;
+						}
+						return thereturn;
+					}
+				}
+			}
+		},
+	
+	SCMProcessWebHook: function(commit) {
+			var gr = new GlideRecord("x_snc_ippi_scm_server_types");
+			gr.get(commit.type);
+			//while (gr.next()){
+			var evaluator = new GlideScopedEvaluator();
+			evaluator.putVariable('commit', commit);
+			evaluator.putVariable('result', null);
+			evaluator.evaluateScript(gr, 'webhook_processor', null);
+			var thereturn = evaluator.getVariable('result');
+			//	if (thereturn){
+			//		gs.info("the return has a value");
+				//	if (thereturn.sha && thereturn.repoURL && thereturn.branchname){
+			return thereturn;
+				//	}
+			//	}
+			//}
+		},
+	
+		Get_CreateRepo: function(repourl, repofullname, type){
+			var thereturn = {};
+			var url;
+			var gr = new GlideRecord('x_snc_ippi_scm_repositories');
+			gr.addQuery('url',repourl);
+			//gr.addQuery('full_name', repofullname);
+			gr.query();
+			if (gr.next()){
+				url = gr.url;
+				thereturn.repo = gr.sys_id + "";
+				
+			}
+			if (!url){
+				var gb = new GlideRecord('x_snc_ippi_scm_repositories');
+				gb.initialize();
+				gb.url = repourl;
+				gb.full_name = repofullname;
+				gb.scm_type = type;
+				thereturn.repo = gb.insert();
+			}
+			return thereturn;
+			
+		},
+		
+		//commit_reverted_to
+		
+		Commits_revert: function(commitJSON){
+			
+			//check if this is a revert
+			if (commitJSON.revert){
+				if (commitJSON.revert == "true"){
+					gs.info("revert is true");
+					//Lookup commit reverted to
+					var revert = new GlideRecord('x_snc_ippi_scm_commits');
+					revert.addQuery('sha', commitJSON.previousSHA);
+					revert.query();
+					var therevert;
+					if (revert.next()) {
+						therevert = revert.sys_id;
+						gs.info("The revert SHA" + therevert);
+						
+					}
+					
+					//Lookup commit to revert
+					var commit = new GlideRecord('x_snc_ippi_scm_commits');
+					commit.addQuery('sha', commitJSON.sha);
+					commit.query();
+					if (commit.next()) {
+						gs.info("Why did this not write");
+						commit.commit_reverted_to = therevert;
+						commit.revert = true;
+						commit.update();
+						
+					}
+				}
+			}
+			
+			
+			
+		},
+	
+	ProcessSCMWebHook: function(WebHookJSON) {
+		var commitarray = this.SCMWebHook(WebHookJSON);
+		for (var x = 0; x<commitarray.length; x++){
+			//gs.info("Commit Array single Value : " + JSON.stringify(commitarray[x]));
+			var commitjson = this.SCMProcessWebHook(commitarray[x]);
+			//gs.info("commit JSON JSON JSON :" + JSON.stringify(commitjson));
+			var repo = this.Get_CreateRepo(commitjson.repoURL,commitjson.repoFullName,commitarray[x]['type']);
+			//Call Webhook Processor
+			var branch = this.Get_CreateBranch(commitjson.branchname,repo.repo);
+			var commit = this.Commits_To_Table(commitjson,repo,branch);
+			this.Commits_revert(commitjson);
+		}
+	},
+	
+	
+		
+		
+		
+		type: 'Build_Server_Processor'
+	};]]></script>
+        <sys_class_name>sys_script_include</sys_class_name>
+        <sys_created_by>shaun.millin</sys_created_by>
+        <sys_created_on>2017-03-29 20:09:05</sys_created_on>
+        <sys_customer_update>true</sys_customer_update>
+        <sys_id>9ad1b43113f132005a4354c32244b012</sys_id>
+        <sys_mod_count>88</sys_mod_count>
+        <sys_name>Build_Server_Processor</sys_name>
+        <sys_package display_value="ippi" source="x_snc_ippi">354767911331ba005a4354c32244b0b3</sys_package>
+        <sys_policy>read</sys_policy>
+        <sys_replace_on_upgrade>false</sys_replace_on_upgrade>
+        <sys_scope display_value="ippi">354767911331ba005a4354c32244b0b3</sys_scope>
+        <sys_update_name>sys_script_include_9ad1b43113f132005a4354c32244b012</sys_update_name>
+        <sys_updated_by>shaun.millin</sys_updated_by>
+        <sys_updated_on>2017-04-27 18:52:39</sys_updated_on>
+    </sys_script_include>
+</record_update>

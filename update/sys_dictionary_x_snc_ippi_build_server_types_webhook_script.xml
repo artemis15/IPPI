@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<record_update>
+    <sys_dictionary action="INSERT_OR_UPDATE" element="webhook_script" table="x_snc_ippi_build_server_types">
+        <active>true</active>
+        <array>false</array>
+        <attributes/>
+        <audit>false</audit>
+        <calculation><![CDATA[(function calculatedFieldValue(current) {
+
+	// Add your code here
+	return '';  // return the calculated value
+
+})(current);]]></calculation>
+        <choice/>
+        <choice_field/>
+        <choice_table/>
+        <column_label>Webhook script</column_label>
+        <comments/>
+        <create_roles/>
+        <default_value>try{	
+//Setting a variable to the webhook
+	var BuildWebHook = webhookjson;
+	
+//Need to return standard JSON Example
+	
+//Build Object to return
+	var returnobject = {
+		CommitSHA : "",
+		BuildURL:"",
+		BuildServer:""
+	};
+	
+	
+//Set the return object
+			//var myproc = new Build_Server_Processor();
+		//var BuildWebHook = {
+			//commit : "6473633764859536",
+			//buildurl : "https://this.is.working",
+			//buildserver : "this.is.working",
+			//jobname: "testing"
+			//};
+			//var myreturn = myproc.WebHook(BuildWebHook);
+			//gs.info(JSON.stringify(myreturn));
+			//var newreturn = myproc.LookUpBuildServer(myreturn);
+			//gs.info(JSON.stringify(newreturn));
+//	returnobject.BuildServer = BuildWebHook.somevalue
+//  returnobject.BuildURL = BuildWebHook.somevalue
+//  returnobject.CommitSHA = BuildWebHook.somevalue
+//returnobject.CommitSHA = BuildWebHook.jobname;
+	returnobject.CommitSHA = BuildWebHook.commit;
+	returnobject.BuildURL = BuildWebHook.buildurl;
+	returnobject.BuildServer = BuildWebHook.buildserver;
+	returnobject.JobName = BuildWebHook.jobname;
+	result =  returnobject;
+}
+//Log out the error for troubleshooting
+catch(err){
+	gs.info(err);
+}</default_value>
+        <defaultsort/>
+        <delete_roles/>
+        <dependent/>
+        <dependent_on_field/>
+        <display>false</display>
+        <dynamic_creation>false</dynamic_creation>
+        <dynamic_creation_script/>
+        <dynamic_default_value/>
+        <dynamic_ref_qual/>
+        <element>webhook_script</element>
+        <element_reference>false</element_reference>
+        <foreign_database/>
+        <internal_type display_value="Script">script</internal_type>
+        <mandatory>false</mandatory>
+        <max_length>20480</max_length>
+        <name>x_snc_ippi_build_server_types</name>
+        <next_element/>
+        <primary>false</primary>
+        <read_only>false</read_only>
+        <read_roles/>
+        <reference/>
+        <reference_cascade_rule/>
+        <reference_floats>false</reference_floats>
+        <reference_key/>
+        <reference_qual/>
+        <reference_qual_condition/>
+        <reference_type/>
+        <sizeclass/>
+        <spell_check>false</spell_check>
+        <staged>false</staged>
+        <sys_class_name>sys_dictionary</sys_class_name>
+        <sys_created_by>shaun.millin</sys_created_by>
+        <sys_created_on>2017-03-28 22:23:22</sys_created_on>
+        <sys_customer_update>true</sys_customer_update>
+        <sys_id>bb38c0ad1331ba005a4354c32244b06e</sys_id>
+        <sys_mod_count>3</sys_mod_count>
+        <sys_name>Webhook script</sys_name>
+        <sys_package display_value="ippi" source="x_snc_ippi">354767911331ba005a4354c32244b0b3</sys_package>
+        <sys_policy/>
+        <sys_replace_on_upgrade>false</sys_replace_on_upgrade>
+        <sys_scope display_value="ippi">354767911331ba005a4354c32244b0b3</sys_scope>
+        <sys_update_name>sys_dictionary_x_snc_ippi_build_server_types_webhook_script</sys_update_name>
+        <sys_updated_by>alex.mittell</sys_updated_by>
+        <sys_updated_on>2017-04-14 17:08:55</sys_updated_on>
+        <table_reference>false</table_reference>
+        <text_index>false</text_index>
+        <unique>false</unique>
+        <use_dependent_field>false</use_dependent_field>
+        <use_dynamic_default>false</use_dynamic_default>
+        <use_reference_qualifier>simple</use_reference_qualifier>
+        <virtual>false</virtual>
+        <widget/>
+        <write_roles/>
+        <xml_view>false</xml_view>
+    </sys_dictionary>
+</record_update>

@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<record_update table="cmn_vm_schedule">
+    <cmn_vm_schedule action="INSERT_OR_UPDATE">
+        <description>VM schedule TkdaDemoStk requested</description>
+        <document/>
+        <document_key/>
+        <name>TkdaDemoStk</name>
+        <parent/>
+        <read_only>false</read_only>
+        <sys_class_name>cmn_vm_schedule</sys_class_name>
+        <sys_created_by>alex.mittell</sys_created_by>
+        <sys_created_on>2017-04-24 16:14:33</sys_created_on>
+        <sys_customer_update>true</sys_customer_update>
+        <sys_id>55a7f506131af2005a4354c32244b0eb</sys_id>
+        <sys_mod_count>7</sys_mod_count>
+        <sys_name>TkdaDemoStk</sys_name>
+        <sys_package display_value="ippi" source="x_snc_ippi">354767911331ba005a4354c32244b0b3</sys_package>
+        <sys_policy/>
+        <sys_replace_on_upgrade>false</sys_replace_on_upgrade>
+        <sys_scope display_value="ippi">354767911331ba005a4354c32244b0b3</sys_scope>
+        <sys_update_name>cmn_vm_schedule_55a7f506131af2005a4354c32244b0eb</sys_update_name>
+        <sys_updated_by>alex.mittell</sys_updated_by>
+        <sys_updated_on>2017-04-24 20:14:56</sys_updated_on>
+        <time_zone/>
+        <type>Virtual Provisioning</type>
+    </cmn_vm_schedule>
+</record_update>

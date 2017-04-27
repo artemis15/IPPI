@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<database>
+    <element label="SCM Commits" max_length="40" name="x_snc_ippi_scm_commits" type="collection">
+        <element label="Branch" max_length="32" name="branch" reference="x_snc_ippi_scm_branches" type="reference"/>
+        <element default="0" label="Change Additions" max_length="40" name="change_additions" type="integer"/>
+        <element default="0" label="Change Deletions" max_length="40" name="change_deletions" type="integer"/>
+        <element label="Commiter" max_length="1024" name="commiter" type="string"/>
+        <element label="Commiter Email" max_length="1024" name="commiter_email" type="string"/>
+        <element label="Commit Date" max_length="40" name="commit_date" type="glide_date_time"/>
+        <element label="Commit Reverted To" max_length="32" name="commit_reverted_to" reference="x_snc_ippi_scm_commits" type="reference"/>
+        <element label="Message" max_length="20480" name="message" type="string"/>
+        <element label="Repository" max_length="32" name="repository" reference="x_snc_ippi_scm_repositories" type="reference"/>
+        <element default="False" label="Revert" max_length="40" name="revert" type="boolean"/>
+        <element display="true" label="SHA" max_length="48" name="sha" type="string"/>
+        <element default="0" label="Total Changes" max_length="40" name="total_changes" type="integer"/>
+        <element label="URL" max_length="1024" name="url" type="url"/>
+        <index name="index">
+            <element name="commit_reverted_to"/>
+        </index>
+        <index name="index2">
+            <element name="repository"/>
+        </index>
+        <index name="index3">
+            <element name="branch"/>
+        </index>
+    </element>
+</database>

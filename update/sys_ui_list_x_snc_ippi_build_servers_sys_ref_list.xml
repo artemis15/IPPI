@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<record_update>
+    <sys_ui_list parent="" relationship="" sys_domain="global" table="x_snc_ippi_build_servers" version="2" view="sys_ref_list">
+        <sys_ui_list_element action="INSERT_OR_UPDATE">
+            <average_value>false</average_value>
+            <element>sys_id</element>
+            <list_id display_value="x_snc_ippi_build_servers" element="NULL" name="x_snc_ippi_build_servers" parent="NULL" relationship="NULL" sys_domain="global" view="4f0f0613db00220000917c841f96197e">b08fcbf64f0af600dc1f0da28110c7b0</list_id>
+            <max_value>false</max_value>
+            <min_value>false</min_value>
+            <position>0</position>
+            <sum>false</sum>
+            <sys_created_by>alex.mittell</sys_created_by>
+            <sys_created_on>2017-04-14 20:18:11</sys_created_on>
+            <sys_id>3c8fc33a4f0af600dc1f0da28110c7f2</sys_id>
+            <sys_mod_count>0</sys_mod_count>
+            <sys_updated_by>alex.mittell</sys_updated_by>
+            <sys_updated_on>2017-04-14 20:18:11</sys_updated_on>
+        </sys_ui_list_element>
+        <sys_ui_list action="INSERT_OR_UPDATE">
+            <average_value>false</average_value>
+            <element/>
+            <max_value>false</max_value>
+            <min_value>false</min_value>
+            <name>x_snc_ippi_build_servers</name>
+            <parent/>
+            <position/>
+            <relationship/>
+            <sum>false</sum>
+            <sys_class_name>sys_ui_list</sys_class_name>
+            <sys_created_by>alex.mittell</sys_created_by>
+            <sys_created_on>2017-04-14 20:18:11</sys_created_on>
+            <sys_customer_update>true</sys_customer_update>
+            <sys_domain>global</sys_domain>
+            <sys_domain_path>/</sys_domain_path>
+            <sys_id>b08fcbf64f0af600dc1f0da28110c7b0</sys_id>
+            <sys_mod_count>0</sys_mod_count>
+            <sys_name>x_snc_ippi_build_servers</sys_name>
+            <sys_package display_value="ippi" source="x_snc_ippi">354767911331ba005a4354c32244b0b3</sys_package>
+            <sys_policy/>
+            <sys_replace_on_upgrade>false</sys_replace_on_upgrade>
+            <sys_scope display_value="ippi">354767911331ba005a4354c32244b0b3</sys_scope>
+            <sys_update_name>sys_ui_list_x_snc_ippi_build_servers_sys_ref_list</sys_update_name>
+            <sys_updated_by>alex.mittell</sys_updated_by>
+            <sys_updated_on>2017-04-14 20:18:11</sys_updated_on>
+            <sys_user/>
+            <view display_value="Reference List" name="sys_ref_list">4f0f0613db00220000917c841f96197e</view>
+            <view_name/>
+        </sys_ui_list>
+    </sys_ui_list>
+</record_update>

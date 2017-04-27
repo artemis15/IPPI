@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<database>
+    <element label="Build Servers" max_length="40" name="x_snc_ippi_build_servers" type="collection">
+        <element label="Credentials" max_length="32" name="credentials" reference="x_snc_ippi_build_server_credentials" type="reference"/>
+        <element display="true" label="Host" max_length="40" name="host" type="string"/>
+        <element label="Mid server" max_length="32" name="mid_server" reference="ecc_agent" type="reference"/>
+        <element label="Type" max_length="32" name="type" reference="x_snc_ippi_build_server_types" type="reference"/>
+        <index name="index">
+            <element name="mid_server"/>
+        </index>
+        <index name="index2">
+            <element name="credentials"/>
+        </index>
+        <index name="index3">
+            <element name="type"/>
+        </index>
+    </element>
+</database>

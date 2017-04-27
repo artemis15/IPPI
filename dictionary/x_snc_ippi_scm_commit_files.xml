@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<database>
+    <element label="SCM Commit Files" max_length="40" name="x_snc_ippi_scm_commit_files" type="collection">
+        <element label="Commit" max_length="32" name="commit" reference="x_snc_ippi_scm_commits" type="reference"/>
+        <element label="Commit SHA" max_length="48" name="commit_sha" type="string"/>
+        <element default="0" label="File Additions" max_length="40" name="file_additions" type="integer"/>
+        <element default="0" label="File Changes" max_length="40" name="file_changes" type="integer"/>
+        <element default="0" label="File Deletions" max_length="40" name="file_deletions" type="integer"/>
+        <element display="true" label="File Name" max_length="256" name="file_name" type="string"/>
+        <element label="File Path" max_length="256" name="file_path" type="string"/>
+        <element default="0" label="File Size" max_length="40" name="file_size" type="integer"/>
+        <element label="Patch" max_length="20480" name="patch" type="string"/>
+        <element label="Status" max_length="40" name="status" type="string"/>
+        <index name="index">
+            <element name="commit"/>
+        </index>
+    </element>
+</database>

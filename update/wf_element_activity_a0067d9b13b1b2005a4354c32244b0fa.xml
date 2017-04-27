@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<record_update table="wf_element_activity">
+    <wf_element_activity action="UPDATE">
+        <access>public</access>
+        <attributes/>
+        <base_provider display_value="SSH">ebee8be6d7022100dfc260affd610368</base_provider>
+        <category/>
+        <checked_out_by display_value="Alex Mittell">eadfb4c34fe02200dc1f0da28110c715</checked_out_by>
+        <default_height/>
+        <default_width/>
+        <description/>
+        <image>images/heisenberg_icons/workflow_ie8/provider_ssh.png</image>
+        <input_meta/>
+        <input_process_script/>
+        <input_transform>{"source":"","command":"","directory":"","credential_tag":"","midCapabilities":"2d20f2760a0006bc095bf17ae4e0d4ee","long_running":"false","must_sudo":"false"}</input_transform>
+        <local_variables/>
+        <name>run command</name>
+        <output_meta/>
+        <output_process_script/>
+        <output_transform/>
+        <processing_script/>
+        <sample_payloads>{}</sample_payloads>
+        <short_description/>
+        <style/>
+        <sys_class_name>wf_element_activity</sys_class_name>
+        <sys_created_by>alex.mittell</sys_created_by>
+        <sys_created_on>2017-04-03 16:48:37</sys_created_on>
+        <sys_customer_update>true</sys_customer_update>
+        <sys_id>a0067d9b13b1b2005a4354c32244b0fa</sys_id>
+        <sys_mod_count>0</sys_mod_count>
+        <sys_name>run command</sys_name>
+        <sys_package display_value="ippi" source="x_snc_ippi">354767911331ba005a4354c32244b0b3</sys_package>
+        <sys_policy/>
+        <sys_replace_on_upgrade>false</sys_replace_on_upgrade>
+        <sys_scope display_value="ippi">354767911331ba005a4354c32244b0b3</sys_scope>
+        <sys_update_name>wf_element_activity_a0067d9b13b1b2005a4354c32244b0fa</sys_update_name>
+        <sys_updated_by>alex.mittell</sys_updated_by>
+        <sys_updated_on>2017-04-03 16:48:37</sys_updated_on>
+        <version_container_id>a30635db13b1b2005a4354c32244b030</version_container_id>
+    </wf_element_activity>
+    <sys_translated_text action="delete_multiple" query="documentkey=a0067d9b13b1b2005a4354c32244b0fa"/>
+</record_update>

@@ -1,0 +1,199 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<record_update table="sys_script_include">
+    <sys_script_include action="INSERT_OR_UPDATE">
+        <access>package_private</access>
+        <active>true</active>
+        <api_name>x_snc_ippi.IppIPlaceHolder</api_name>
+        <client_callable>false</client_callable>
+        <description>This just holds example returns that need to be sent from each type script</description>
+        <name>IppIPlaceHolder</name>
+        <script><![CDATA[var IppIPlaceHolder = Class.create();
+IppIPlaceHolder.prototype = {
+    initialize: function() {
+    },
+
+    type: 'IppIPlaceHolder'
+};
+
+/*
+SCM Web Hook
+try {
+var commitJSON = {};
+commitJSON.revert = "true";
+commitJSON.previousSHA = "6473633764859536";
+commitJSON.additions = 5;
+commitJSON.repoURL = "http://MyREPO/repo.com";
+commitJSON.repoFullName = "Testing";
+commitJSON.branchname = "mytestBranch";
+commitJSON.deletions = 3;
+commitJSON.totalchanges = 8;					
+commitJSON.authorname = "ShaunMillin";
+//ISODateTime with offset
+commitJSON.date = "2008-09-15T15:53:00+05:00";
+commitJSON.committeremail = "ShaunMillin";
+commitJSON.committername = "ShaunMillin";
+commitJSON.message = "This is an example message";
+commitJSON.sha = "6473677764859536";
+commitJSON.url = "http://google.com";
+commitJSON.branchname = "testbranch";
+commitJSON.files = [];
+var file = {};
+file.sha = "11111111111111111";
+file.filename = "test.php";
+file.changes = 8;
+file.additions = 5;
+file.deletions = 3;
+file.status = "closed";
+file.patch = '++@wget';
+commitJSON.files.push(file);
+
+result = commitJSON;
+}
+catch(err){}
+
+
+
+
+******************************
+
+SCM Fetch Commit
+var commitJSON = {};
+commitJSON.additions = 5;
+commitJSON.deletions = 3;
+commitJSON.totalchanges = 8;					
+commitJSON.authorname = "ShaunMillin";
+//ISODateTime with offset
+commitJSON.date = "2008-09-15T15:53:00+05:00";
+commitJSON.committeremail = "ShaunMillin";
+commitJSON.committername = "ShaunMillin";
+commitJSON.message = "This is an example message";
+commitJSON.sha = "6473633764859536";
+commitJSON.url = "http://google.com";
+commitJSON.branchname = "testbranch";
+commitJSON.files = [];
+var file = {};
+file.sha = "11111111111111111";
+file.filename = "test.php";
+file.changes = 8;
+file.additions = 5;
+file.deletions = 3;
+file.status = "closed";
+file.patch = '++@wget';
+commitJSON.files.push(file);
+
+result = commitJSON;
+
+
+
+*****************************
+
+
+Fetch Build Script
+
+//Variables that get passed in 
+//var fetchbuildurl, buildserver, buildurl, commitSHA, authtoken, mid_server, username, password, buildserverSysID;
+try {
+	
+	//Make WebCall to Build Server
+	
+	
+	//Return Set Variables from Build Server. 
+
+	var returnobject = {};
+	returnobject.build_id = "BuildID";   number
+	returnobject.building = "Status";    string
+	returnobject.description = "Description";     string
+	returnobject.display_name = "DisplayName";    string
+	returnobject.duration = "Your Duration";      number in seconds
+	returnobject.estimated_duration = "Your Estimated Duration";  number in seconds
+	returnobject.full_display_name = "Full Name";   string
+	returnobject.result = "Your Result";     string
+	returnobject.timestamp = "glidedatetime object";   glidedatetime object
+	returnobject.url = "Your Url";   string
+	
+	
+	
+	var returnobject = {};
+	returnobject.build_id = "67654";
+	returnobject.building = "false";
+	returnobject.description = "Description";
+	returnobject.display_name = "DisplayName";
+	returnobject.duration = 34;
+	returnobject.buildnumber = "1111111";
+	returnobject.building = "false";
+	returnobject.estimated_duration = 40;
+	returnobject.full_display_name = "Full Name";
+	returnobject.result = "success";
+	returnobject.JobName = "testing";
+	//returnobject.timestamp = "glidedatetime object";
+	returnobject.url = "https://itworks.com";
+	
+	result = returnobject;
+	
+}
+catch(err){}
+
+**************************
+
+
+Build Web Hook
+
+try{	
+//Setting a variable to the webhook
+	var BuildWebHook = webhookjson;
+	
+//Need to return standard JSON Example
+	
+//Build Object to return
+	var returnobject = {
+		CommitSHA : "",
+		BuildURL:"",
+		BuildServer:""
+	};
+	
+	
+//Set the return object
+			//var myproc = new Build_Server_Processor();
+		//var BuildWebHook = {
+			//commit : "6473633764859536",
+			//buildurl : "https://this.is.working",
+			//buildserver : "this.is.working",
+			//jobname: "testing"
+			//};
+			//var myreturn = myproc.WebHook(BuildWebHook);
+			//gs.info(JSON.stringify(myreturn));
+			//var newreturn = myproc.LookUpBuildServer(myreturn);
+			//gs.info(JSON.stringify(newreturn));
+//	returnobject.BuildServer = BuildWebHook.somevalue
+//  returnobject.BuildURL = BuildWebHook.somevalue
+//  returnobject.CommitSHA = BuildWebHook.somevalue
+//returnobject.CommitSHA = BuildWebHook.jobname;
+	returnobject.CommitSHA = BuildWebHook.commit;
+	returnobject.BuildURL = BuildWebHook.buildurl;
+	returnobject.BuildServer = BuildWebHook.buildserver;
+	returnobject.JobName = BuildWebHook.jobname;
+	result =  returnobject;
+}
+//Log out the error for troubleshooting
+catch(err){
+	gs.info(err);
+}
+
+***********************************************
+*/]]></script>
+        <sys_class_name>sys_script_include</sys_class_name>
+        <sys_created_by>shaun.millin</sys_created_by>
+        <sys_created_on>2017-04-14 13:47:22</sys_created_on>
+        <sys_customer_update>true</sys_customer_update>
+        <sys_id>fe05f5f2130672005a4354c32244b011</sys_id>
+        <sys_mod_count>0</sys_mod_count>
+        <sys_name>IppIPlaceHolder</sys_name>
+        <sys_package display_value="ippi" source="x_snc_ippi">354767911331ba005a4354c32244b0b3</sys_package>
+        <sys_policy>read</sys_policy>
+        <sys_replace_on_upgrade>false</sys_replace_on_upgrade>
+        <sys_scope display_value="ippi">354767911331ba005a4354c32244b0b3</sys_scope>
+        <sys_update_name>sys_script_include_fe05f5f2130672005a4354c32244b011</sys_update_name>
+        <sys_updated_by>shaun.millin</sys_updated_by>
+        <sys_updated_on>2017-04-14 13:47:22</sys_updated_on>
+    </sys_script_include>
+</record_update>

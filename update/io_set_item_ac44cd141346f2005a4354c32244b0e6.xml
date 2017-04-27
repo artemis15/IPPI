@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<record_update table="io_set_item">
+    <io_set_item action="INSERT_OR_UPDATE">
+        <order>40</order>
+        <sc_cat_item display_value="EC2 Instance - Windows-2008r2-sp1-english-sqlstandard-2011.11.11-Demo-v1">9444cd141346f2005a4354c32244b0e1</sc_cat_item>
+        <sys_class_name>io_set_item</sys_class_name>
+        <sys_created_by>alex.mittell</sys_created_by>
+        <sys_created_on>2017-04-06 15:44:59</sys_created_on>
+        <sys_customer_update>false</sys_customer_update>
+        <sys_id>ac44cd141346f2005a4354c32244b0e6</sys_id>
+        <sys_mod_count>2</sys_mod_count>
+        <sys_name>Cloud Management Auto Tagging Variables.EC2 Instance - Windows-2008r2-sp1-english-sqlstandard-2011.11.11-Demo-v1</sys_name>
+        <sys_package display_value="ippi" source="x_snc_ippi">354767911331ba005a4354c32244b0b3</sys_package>
+        <sys_policy/>
+        <sys_replace_on_upgrade>true</sys_replace_on_upgrade>
+        <sys_scope display_value="ippi">354767911331ba005a4354c32244b0b3</sys_scope>
+        <sys_update_name>io_set_item_ac44cd141346f2005a4354c32244b0e6</sys_update_name>
+        <sys_updated_by>alex.mittell</sys_updated_by>
+        <sys_updated_on>2017-04-27 22:22:26</sys_updated_on>
+        <variable_set display_value="Cloud Management Auto Tagging Variables">54168851d73121008de76ccf6e6103b7</variable_set>
+    </io_set_item>
+</record_update>

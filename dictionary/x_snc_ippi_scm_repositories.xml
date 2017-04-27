@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<database>
+    <element label="SCM Repositories" max_length="40" name="x_snc_ippi_scm_repositories" type="collection">
+        <element label="Build Job Name" max_length="40" name="build_job_name" type="string"/>
+        <element label="Build Server" max_length="32" name="build_server" reference="x_snc_ippi_build_servers" type="reference"/>
+        <element label="Credential" max_length="32" name="credential" reference="x_snc_ippi_scm_credentials" type="reference"/>
+        <element label="Description" max_length="20480" name="description" type="string"/>
+        <element display="true" label="Full Name" max_length="20480" name="full_name" type="string"/>
+        <element label="MID Server" max_length="32" name="mid_server" reference="ecc_agent" type="reference"/>
+        <element label="SCM Type" max_length="32" name="scm_type" reference="x_snc_ippi_scm_server_types" type="reference"/>
+        <element label="URL" max_length="1024" name="url" type="url"/>
+        <index name="index">
+            <element name="credential"/>
+        </index>
+        <index name="index2">
+            <element name="mid_server"/>
+        </index>
+        <index name="index3">
+            <element name="build_server"/>
+        </index>
+        <index name="index4">
+            <element name="scm_type"/>
+        </index>
+    </element>
+</database>

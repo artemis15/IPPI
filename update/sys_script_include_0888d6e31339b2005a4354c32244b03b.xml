@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<record_update table="sys_script_include">
+    <sys_script_include action="INSERT_OR_UPDATE">
+        <access>package_private</access>
+        <active>true</active>
+        <api_name>x_snc_ippi.webcall</api_name>
+        <client_callable>false</client_callable>
+        <description>CustomWebCall</description>
+        <name>webcall</name>
+        <script><![CDATA[var webcall = Class.create();
+webcall.prototype = {
+	initialize: function() {},
+	
+    process: function(url,type,typeid) {
+		gs.info("XXXXX "+url+" "+type+" "+typeid);
+		if (type == "SCM"){
+			gs.info("Script Include webcall invoked for SCM");
+			var gr = new GlideRecord('x_snc_ippi_scm_repositories');
+			gr.get(typeid);
+			gs.info("SCM GLIDE RECORD WAS: "+gr.sys_id);
+			var username = gr.credential.user + "";
+			if (gr.credential.password){
+				
+				var password = gr.credential.password.getDecryptedValue() + "";
+			}
+			else {
+				var password = null;
+			}
+			
+			if (gr.credential.authtoken){
+				
+				var authtoken = gr.credential.authtoken.getDecryptedValue() + "";
+			}
+			else {
+				var authtoken = null;
+			}
+			//Build Start of the Web Call
+			var scmwebcall = new sn_ws.RESTMessageV2();
+			scmwebcall.setEndpoint(url);
+			gs.info("Webcall: URL = "+url);
+			scmwebcall.setHttpMethod("get");
+			
+			//Add Mid Server if Needed. 
+			gs.info("Mid Server :" + gr.mid_server);
+			if (gr.mid_server){
+				gs.info("Webcall: Using MID = "+gr.mid_server.name);
+				scmwebcall.setMIDServer(gr.mid_server.name);
+			}
+			//Web Call to support Basic Auth
+			if(gr.type == "Basic"){
+				gs.info("Webcall: Using Basic Auth.");
+				scmwebcall.setBasicAuth(username, password);
+			}
+			
+			//Web Call to support Auth Token
+			if(gr.type == "Token"){
+				gs.info("Webcall: Using Auth Token");
+			}
+			scmwebcall.setEccParameter('skip_sensor', true);
+			
+			var httpexe = scmwebcall.execute();
+			var weberror = httpexe.getErrorCode();
+			if (weberror){
+				throw httpexe.getErrorMessage();
+			}
+			else {
+				var responseBody = JSON.parse(httpexe.getBody());
+				gs.info("Webcall: SCM BODY = "+httpexe.getBody());
+				return responseBody;
+			}
+			
+
+		}
+		if (type == "Build"){
+			var gb = new GlideRecord('x_snc_ippi_build_servers');
+			gb.get(typeid);
+			var username = gb.credentials.username + "";
+			gs.info("userename " + username);
+			if (gb.credentials.password){
+				var password = gb.credentials.password.getDecryptedValue() + "";
+			}
+			else {
+				var password = null;
+			}
+			
+			if (gb.credentials.authtoken){
+				var authtoken = gb.credentials.authtoken.getDecryptedValue() + "";
+			}
+			else {
+				var authtoken = null;
+			}
+			//Build Start of the Web Call
+			var webcall = new sn_ws.RESTMessageV2();
+			webcall.setEndpoint(url);
+			webcall.setHttpMethod("get");
+			
+			//Add Mid Server if Needed. 
+			gs.info("Mid Server :" + gb.mid_server);
+			if (gb.mid_server){
+				webcall.setMIDServer(gb.mid_server.name);
+			}
+			//Web Call to support Basic Auth
+			if(gb.credentials.type == "Basic"){
+				webcall.setBasicAuth(username, password);
+			}
+			
+			//Web Call to support Auth Token
+			if(gb.credentials.type == "Token"){
+				
+			}
+			webcall.setEccParameter('skip_sensor', true);
+			var httpexe = webcall.execute();
+			var weberror = httpexe.getErrorCode();
+			if (weberror){
+				throw httpexe.getErrorMessage();
+			}
+			else {
+				var responseBody = httpexe.getBody();
+				gs.info("STATUS="+httpexe.getStatusCode());
+				gs.info("BODY="+httpexe.getBody());
+				return global.JSON.parse(httpexe.getBody());
+			}
+		}
+    },
+
+    type: 'webcall'
+};]]></script>
+        <sys_class_name>sys_script_include</sys_class_name>
+        <sys_created_by>shaun.millin</sys_created_by>
+        <sys_created_on>2017-04-04 14:04:25</sys_created_on>
+        <sys_customer_update>true</sys_customer_update>
+        <sys_id>0888d6e31339b2005a4354c32244b03b</sys_id>
+        <sys_mod_count>37</sys_mod_count>
+        <sys_name>webcall</sys_name>
+        <sys_package display_value="ippi" source="x_snc_ippi">354767911331ba005a4354c32244b0b3</sys_package>
+        <sys_policy>read</sys_policy>
+        <sys_replace_on_upgrade>false</sys_replace_on_upgrade>
+        <sys_scope display_value="ippi">354767911331ba005a4354c32244b0b3</sys_scope>
+        <sys_update_name>sys_script_include_0888d6e31339b2005a4354c32244b03b</sys_update_name>
+        <sys_updated_by>alex.mittell</sys_updated_by>
+        <sys_updated_on>2017-04-25 14:19:26</sys_updated_on>
+    </sys_script_include>
+</record_update>

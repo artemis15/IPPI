@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<database>
+    <element label="Builds" max_length="40" name="x_snc_ippi_builds" type="collection">
+        <element label="Building" max_length="40" name="building" type="string"/>
+        <element label="Build ID" max_length="40" name="build_id" type="string"/>
+        <element label="Build Number" max_length="40" name="build_number" type="integer"/>
+        <element label="Commit" max_length="32" name="commit" reference="x_snc_ippi_scm_commits" type="reference"/>
+        <element label="Description" max_length="4000" name="description" type="string"/>
+        <element display="true" label="Display Name" max_length="40" name="display_name" type="string"/>
+        <element label="Duration" max_length="40" name="duration" type="integer"/>
+        <element label="Estimated Duration" max_length="40" name="estimated_duration" type="integer"/>
+        <element label="Full Display Name" max_length="100" name="full_display_name" type="string"/>
+        <element label="Result" max_length="40" name="result" type="string"/>
+        <element label="Timestamp" max_length="40" name="timestamp" type="glide_date_time"/>
+        <element label="url" max_length="1024" name="url" type="url"/>
+        <index name="index">
+            <element name="commit"/>
+        </index>
+    </element>
+</database>
